@@ -13,6 +13,8 @@ import rootRoute from '~/routes/root.route'
 import notFoundRoute from '~/routes/404.route'
 import userRoutes from '~/routes/user.route'
 import authRoutes from '~/routes/auth.route'
+import residentRoutes from '~/routes/resident.route'
+import householdRoutes from '~/routes/household.route'
 
 dotenv.config()
 const app = express()
@@ -35,6 +37,8 @@ app.use('/api', express.static(path.join(__dirname, 'public')))
 app.use('/api', rootRoute)
 app.use('/api/auth', authRoutes)
 app.use('/api/users', userRoutes)
+app.use('/api/residents', residentRoutes)
+app.use('/api/households', householdRoutes)
 app.use('*', notFoundRoute)
 
 app.use(errorHandler)

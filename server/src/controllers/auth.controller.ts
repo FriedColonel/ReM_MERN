@@ -3,7 +3,7 @@ import asyncHandler from 'express-async-handler'
 import { UserData } from '~/@types'
 import User from '~/models/User.model'
 import bcrypt from 'bcrypt'
-import jwt from 'jsonwebtoken'
+import jwt, { JwtPayload } from 'jsonwebtoken'
 
 export const signNewRefreshToken = (userData: UserData & { _id: string }): string => {
   return jwt.sign({ id: userData._id }, process.env.REFRESH_TOKEN_SECRET as string, {
@@ -169,3 +169,42 @@ export const logout: RequestHandler = asyncHandler(async (req, res) => {
 
   res.json({ message: 'Logged out. Cookie cleared ><!' })
 })
+
+export const getCurrentUser: RequestHandler = asyncHandler(async (req, res) => {
+  const authHeader = (req.headers.authorization || req.headers.Authorization) as string | undefined
+
+  if (!authHeader?.startsWith('Bearer ')) {
+    res.status(401).json({ message: 'Unauthorized' })
+    return
+  }
+
+  const token: string = authHeader.split(' ')[1]
+
+  const user = await getUser(token)
+
+  if (typeof user === 'string') {
+    res.status(403).json({ message: 'Forbidden' })
+    return
+  }
+
+  res.json({ data: user })
+})
+
+export const getUser = async (token: string) => {
+  let error = false
+  let user = {}
+
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET as string, (err, decoded) => {
+    const userData = decoded as JwtPayload | undefined
+
+    if (err || !userData || !userData.UserInfo) {
+      error = true
+      return
+    }
+
+    user = userData.UserInfo
+  })
+
+  if (error) return 'Forbidden'
+  return user
+}

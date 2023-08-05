@@ -1,3 +1,4 @@
+@import 'antd/dist/reset.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -10,16 +11,35 @@
   box-sizing: border-box;
 }
 
-body {
-  font-family: 'Roboto', sans-serif;
-  font-size: 16px;
-}
-
-.root {
+#root {
   width: 100vw;
   height: 100vh;
+  overflow: hidden;
+}
+
+body {
+  font-size: 16px;
 }
 
 .ant-modal-footer .ant-btn-primary {
   background-color: #1677ff !important;
+}
+
+.ant-modal-footer .ant-btn-default {
+  background-color: red;
+  color: white;
+}
+
+.ant-modal-footer .ant-btn-primary {
+  background-color: #1677ff !important;
+}
+
+.ant-modal-footer .ant-btn-default {
+  background-color: red;
+  color: white;
+}
+
+.ant-modal-footer {
+  display: flex;
+  justify-content: flex-end;
 }
